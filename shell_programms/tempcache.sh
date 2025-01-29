@@ -5,13 +5,14 @@ echo "Enter the city name"
 read city
 
 cache_file="./.cache/temp/data.json"
-#cache file expired after seconds
-cache_duration=172800   #2 days
-present_city=$(jq --arg city "$city" '.[] | select (.name == $city)' $cache_file)
 
-if [[ -f $cache_file && $present_city ]];then
-   temp=$(echo $cache_file | jq -r 'main.temp')
-   echo $temp
+
+present_data=$(cat "$cache_file" | jq -r ".[] | select(.name == \"${city}\")")
+echo "city:-$present_data"
+
+if [[ -f $cache_file && $present_data ]];then
+   temp=$(echo "$present_data" | jq -r '.main.temp')
+   echo "temp:$temp"
    echo "Data loading from cache file...."
    echo "The temperature of $city is $temp"
 else
